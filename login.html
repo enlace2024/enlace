@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+
+        .login-container {
+            background-color: white;
+            margin: 100px auto;
+            padding: 10px;
+            padding-left: 50px;
+            padding-right: 50px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(1, 2, 45, 0.1);
+            width: 350px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 4px;
+            border: 1px solid rgb(12, 12, 12);
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #155fa0;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: linear-gradient(to right, #155fa0, #64b5f6);
+            transform: scale(1.05);
+        }
+
+        button:disabled {
+            background-color: #ccc;
+        }
+
+        #error-message {
+            color: red;
+            text-align: center;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <nav>
+        <ul class="navbar">
+            <li><a href="front.html">Home</a></li>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="spotlight.html">Spotlight</a></li>
+            <li><a href="contact.html">Contact Us</a></li>
+            <li><a href="login.html">Login</a></li>
+            <li><a href="register.html">Register</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main>
+    <section id="login" class="section"></section>
+    <div class="login-container">
+        <h2>Login</h2>
+        <form class="auth-form" id="loginForm">
+            <div class="input-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required placeholder="Enter email">
+            </div>
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required placeholder="Enter password">
+            </div>
+            <button type="submit" id="loginButton" disabled>Login</button>
+            <p id="error-message"></p> <!-- Added error message display here -->
+        </form>
+    </div>
+</section>
+
+<script type="module">
+    // Firebase Initialization
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+    // Firebase Config
+    const firebaseConfig = {
+        apiKey: "AIzaSyCysdmrWW2SFOo66GwPrZ4YSXcUFBeC88Y",  // Replace with your Firebase API Key
+        authDomain: "enlace-4ce34.firebaseapp.com",
+        projectId: "enlace-4ce34",
+        storageBucket: "enlace-4ce34.appspot.com",
+        messagingSenderId: "574294679657",
+        appId: "1:574294679657:web:13e33ac4a4b01da3c902f8",
+        measurementId: "G-PKMKGNVDSK"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Enable the login button if both fields are filled
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const loginButton = document.getElementById('loginButton');
+
+    function checkForm() {
+        if (emailInput.value && passwordInput.value) {
+            loginButton.disabled = false;
+        } else {
+            loginButton.disabled = true;
+        }
+    }
+
+    emailInput.addEventListener('input', checkForm);
+    passwordInput.addEventListener('input', checkForm);
+
+    // Event listener for the login form submission
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault(); // Prevent the default form submission behavior
+        
+        // Get form data
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        try {
+            // Sign in with Firebase Authentication
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+
+            // Check if the user exists in either the alumni or students collection
+            const alumniDocRef = doc(db, "alumni", user.uid);
+            const studentDocRef = doc(db, "students", user.uid);
+
+            // Fetch data from the alumni collection
+            const alumniDoc = await getDoc(alumniDocRef);
+
+            if (alumniDoc.exists()) {
+                // User is an alumni
+                alert('Login successful as Alumni!');
+                window.location.href = 'front.html'; // Redirect to alumni dashboard
+                return;
+            }
+
+            // Fetch data from the students collection
+            const studentDoc = await getDoc(studentDocRef);
+
+            if (studentDoc.exists()) {
+                // User is a student
+                alert('Login successful as Student!');
+                window.location.href = 'front.html'; // Redirect to student dashboard
+                return;
+            }
+
+            // If the user doesn't exist in either collection
+            alert('User not found in either alumni or students.');
+        } catch (error) {
+            const errorMessage = error.message;
+            document.getElementById('error-message').textContent = `Error: ${errorMessage}`;
+        }
+    });
+</script>
+
+</body>
+</html>
