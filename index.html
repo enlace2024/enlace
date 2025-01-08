@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>     
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enlace.com</title>
+    <style>
+        .modal-content {
+            background-color: rgb(197, 210, 240);
+            border-radius: 10px;
+            padding: 20px;
+            width: 350px;
+            height: 150px;
+            display: flex; /* Flexbox to align items horizontally */
+            align-items: center;
+            position: relative;
+        }
+
+        /* Profile image style */
+        .profile-img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-right: 30px;
+            margin-left: 30px; /* Increased space between image and text */
+        }
+
+        /* Text section styling */
+        .profile-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding-left: 20px; /* Added padding to space out text from the image */
+        }
+
+        .profile-info h4 {
+            margin: 0;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .profile-info p {
+            margin: 5px 0;
+            color: #111010;
+        }
+        #pre {
+            font-size: 4rem; 
+            font-weight: 1000;
+            font-style: oblique;
+            color: white;
+        }
+
+        #pr {
+            margin-top: 10px;
+            font-size: 1.5rem;
+            font-weight: lighter;
+            color: white;
+        }
+
+        button {
+            display: block;
+            margin: 30px auto;
+            font-size: 1rem;
+            font-weight: bold;
+            padding: 10px 20px;
+            color: rgb(226, 229, 247);
+            background-color: rgb(15, 15, 15);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: rgb(30, 30, 30);
+        }
+        .spo {
+            font-size: 1.5rem;
+            margin-top: 10px;
+            color: white;
+        }
+
+        ul {
+            font-size: 2rem;
+            list-style-type: circle;
+            text-align: left;
+            display: inline-block;
+            margin-left: 40px;
+            color: white;
+        }
+
+        /* Body Styling */
+        body {
+          
+            font-family: 'Times New Roman', Times, serif;
+            display: flex;
+            flex-direction: column; /* Stack elements vertically */
+            justify-content: flex-start; /* Ensure content starts from top */
+            align-items: center;
+            height: 100vh;
+            margin: 100px;   
+            padding: 20px;    
+        }
+        .main{
+            text-align: center;
+        }
+        body::before {
+            content: ''; 
+            position: fixed; 
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('new5.jpg'); 
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            filter: blur(2px);
+            z-index: -1;
+        }
+        .slideshow-container {
+            position: relative;
+            width: 350px;
+            height: 120px;
+            margin: 50px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            border: 3px solid #0c0c0c;
+            border-radius: 8px;
+            background-color: #bfcbf7;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .user-card {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            flex: 1;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            width: 100%;
+            flex-direction: row;
+            cursor: pointer;
+        }
+        .user-card.active {
+            display: flex;
+            opacity: 1;
+        }
+        .profile-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .profile-img:hover {
+            transform: scale(1.1);
+        }
+
+        .profile-details {
+            margin-left: 20px;
+            text-align: left;
+            flex: 1;
+        }
+
+        .profile-details h3,
+        .profile-details p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+   
+    <div class="slideshow-container">
+        <!-- User profiles will be inserted here -->
+    </div>
+ 
+    <script>
+        const users = [
+            { name: "Alice", gender: "female", profilePicture: "", experience: "5 years", jobRole: "Software Engineer" },
+            { name: "Bob", gender: "male", profilePicture: "", experience: "3 years", jobRole: "Data Analyst" },
+            { name: "Charlie", gender: "male", profilePicture: "", experience: "7 years", jobRole: "Project Manager" },
+            { name: "Diana", gender: "female", profilePicture: "", experience: "2 years", jobRole: "UI/UX Designer" },
+        ];
+
+        // Define gender-specific professional icons
+        const professionalIcons = {
+            male: "male.jpg", // Replace with the actual path to your male icon
+            female: "female.jpg", // Replace with the actual path to your female icon
+            default: "default.jpg", // Replace with the path to a generic icon if needed
+        };
+
+        // Assign default profile pictures
+        const updatedUsers = users.map((user) => {
+            return {
+                ...user,
+                profilePicture: user.profilePicture || professionalIcons[user.gender] || professionalIcons.default,
+            };
+        });
+
+        const slideshowContainer = document.querySelector('.slideshow-container');
+
+        // Add user cards to the container
+        updatedUsers.forEach((user, index) => {
+            const userCard = document.createElement('div');
+            userCard.classList.add('user-card');
+            if (index === 0) userCard.classList.add('active'); // Make the first card active
+
+            userCard.innerHTML = `
+                <img src="${user.profilePicture}" alt="${user.name}'s Profile Picture" class="profile-img">
+                <div class="profile-details">
+                    <h3>${user.name}</h3>
+                    <p>Gender: ${user.gender}</p>
+                    <p>Experience: ${user.experience}</p>
+                    <p>Job Role: ${user.jobRole}</p>
+                </div>
+            `;
+            slideshowContainer.appendChild(userCard);
+        });
+
+        let currentIndex = 0;
+        let slideInterval;
+        let isPaused = false; // Track the paused state
+
+        // Function to switch to the next profile
+        function showNextProfile() {
+            const cards = document.querySelectorAll('.user-card');
+            cards[currentIndex].classList.remove('active');
+            currentIndex = (currentIndex + 1) % cards.length;
+            cards[currentIndex].classList.add('active');
+        }
+
+        // Start the slideshow
+        function startSlideshow() {
+            slideInterval = setInterval(showNextProfile, 2000); // Change profile every 3 seconds
+        }
+
+        // Pause the slideshow
+        function pauseSlideshow() {
+            clearInterval(slideInterval);
+            isPaused = true;
+        }
+
+        // Resume the slideshow
+        function resumeSlideshow() {
+            startSlideshow();
+            isPaused = false;
+        }
+
+        // Event listeners for hover
+        function pauseOnHover() {
+            if (!isPaused) {
+                pauseSlideshow();
+            }
+        }
+
+        function resumeOnLeave() {
+            if (isPaused) {
+                resumeSlideshow();
+            }
+        }
+
+        // Wait for DOM content to be fully loaded and images to be available
+        window.addEventListener('load', () => {
+            // Attach event listeners to pause/resume slideshow on hover over the entire user card
+            const userCards = document.querySelectorAll('.user-card');
+            userCards.forEach(card => {
+                card.addEventListener('mouseenter', pauseOnHover);  // Pause slideshow when mouse enters card
+                card.addEventListener('mouseleave', resumeOnLeave); // Resume slideshow when mouse leaves card
+            });
+
+            // Start the slideshow after page load
+            startSlideshow();
+        });
+    </script>
+    <div class="main">
+        <h1 id="pre">Enlace</h1>
+        <h6 id="pr">A place where experience meets ambition</h6>
+        <a href="register.html" style="text-decoration: none;"><button>Register</button></a>
+        <div class="spo">
+            <ul>
+                <li>Mentorship from alumni members</li>
+                <li>Interview experience sharing</li>
+                <li>Career opportunities</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
