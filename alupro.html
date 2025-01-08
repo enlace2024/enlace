@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alumni Registration</title>
+    <style>
+       body, html {
+        font-size: large;
+        text-align: center;
+        height: 100%; /* Ensure the body and HTML take up full height */
+        margin: 0; /* Remove default margin */
+        display: flex;
+        justify-content: center; /* Horizontally center the box */
+        align-items: center; /* Vertically center the box */
+    }
+
+    body::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: url('new3.jpg'); /* Replace with your image URL */
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        filter: blur(3px); /* Adjust the blur amount */
+        z-index: -1;
+    }
+
+    h1 {
+        text-align: center;
+    }
+
+    label {
+        width: 100px;
+        display: inline-block;
+    }
+
+    select {
+        width: 150px;
+    }
+
+    button {
+        width: 150px;
+        height: 40px;
+        background-color: #2fa242;
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    .container {
+        width: 400px;
+        height: 500px;
+        background-color: rgb(241, 246, 247);
+        border: 2px solid rgb(200, 239, 246);
+        padding: 50px;
+        padding-top: 20px;
+        line-height: 20px;
+    }
+
+    button:hover {
+        background-color: green;
+    }
+    </style>
+</head>
+<body>
+<div class="container">
+    <legend><u><h1>Alumni Registration</h1></u></legend>
+    <form id="alumni-signup">
+        <label for="Name">Full Name:</label>
+        <input type="text" id="Name" name="name" required><br><br>
+        
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required><br><br>
+        
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required><br><br>
+        
+        <label for="pass">Confirm Password:</label>
+        <input type="password" id="pass" name="pass" required><br><br>
+        
+        <label for="graduation_year">Graduation Year:</label>
+        <input type="text" id="graduation_year" name="graduation_year" required><br><br>
+        
+        <label for="Professionalstatus">Professional Status:</label>
+        <input type="text" id="Professionalstatus" name="Professionalstatus" required><br><br>
+        
+        <label for="Description">Description</label>
+        <input type="text" id="Description" name="Description" placeholder="Job role" style="padding:15px;transition:width 0.3s"><br><br>
+        
+        <label for="Location">Location</label>
+        <input type="text" id="Location" name="Location" required><br><br>
+        
+        <label for="Experience">Experience:</label>
+        <input type="number" id="Experience" name="Experience" required><br><br><br><br><br>
+        
+        <button type="submit">Register</button>
+    </form>
+</div>
+
+<script type="module">
+    // Firebase initialization
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+    
+    const firebaseConfig = {
+        apiKey: "AIzaSyCysdmrWW2SFOo66GwPrZ4YSXcUFBeC88Y",  // Replace with your Firebase API Key
+        authDomain: "enlace-4ce34.firebaseapp.com",
+        projectId: "enlace-4ce34",
+        storageBucket: "enlace-4ce34.appspot.com",
+        messagingSenderId: "574294679657",
+        appId: "1:574294679657:web:13e33ac4a4b01da3c902f8",
+        measurementId: "G-PKMKGNVDSK"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Form submit event handler
+    document.getElementById('alumni-signup').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        // Get form data
+        const fullname = document.getElementById('Name').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('pass').value;
+        const graduationYear = document.getElementById('graduation_year').value;
+        const professionalStatus = document.getElementById('Professionalstatus').value;
+        const location = document.getElementById('Location').value;
+        const experience = document.getElementById('Experience').value;
+
+        // Check if passwords match
+        if (password !== confirmPassword) {
+            alert('Passwords do not match!');
+            return;
+        }
+
+        try {
+            // Create a user with Firebase Authentication
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+
+            // Store user details in Firestore (without storing passwords)
+            await setDoc(doc(db, "alumni", user.uid), {
+                fullname: fullname,
+                email: email,
+                graduationYear: graduationYear,
+                professionalStatus: professionalStatus,
+                location: location,
+                experience: experience,
+                description: document.getElementById('Description').value,
+                createdAt: new Date()
+            });
+
+            // Show success message
+            alert('Registration successful!');
+            // Optionally, reset the form
+            document.getElementById('alumni-signup').reset();
+        } catch (error) {
+            // Handle error
+            alert('Error: ' + error.message);
+        }
+    });
+</script>
+</body>
+</html>
