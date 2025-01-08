@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Registration</title>
+    <style>
+    body, html {
+        font-size: large;
+        text-align: center;
+        height: 100%; 
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    body::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: url('new3.jpg');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        filter: blur(2px);
+        z-index: -1;
+    }
+
+    h1 {
+        text-align: center;
+    }
+
+    label {
+        width: 100px;
+        display: inline-block;
+    }
+
+    select {
+        width: 150px;
+    }
+
+    button {
+        width: 150px;
+        height: 40px;
+        background-color: #2fa242;
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    .container {
+        width: 400px;
+        height: auto;
+        background-color: rgb(241, 246, 247);
+        border: 2px solid rgb(200, 239, 246);
+        padding: 30px;
+        padding-top: 20px;
+        line-height: 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    button:hover {
+        background-color: green;
+    }
+
+    .message, .error-message {
+        margin-top: 10px;
+        color: red;
+        font-weight: bold;
+    }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <legend><u><h1>Student Registration</h1></u></legend>
+    <form id="student-signup">
+        <br><br>
+        <label for="name">Full Name:</label>
+        <input type="text" id="name" name="name"  required><br><br>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email"  required><br><br>
+        <label for="number">Ph No:</label>
+        <input type="text" id="number" name="number"  required><br><br>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required><br><br>
+        <label for="pass">Confirm Password:</label>
+        <input type="password" id="pass" name="pass" required><br><br>
+        <label for="year">Currently Pursuing Year:</label>
+        <select name="numbers" id="year">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+        </select><br><br><br><br><br><br>
+        <button type="submit">Register</button>
+    </form>
+    <p class="message" id="message"></p>
+    <p class="error-message" id="error-message"></p>
+</div>
+
+<script type="module">
+    // Firebase initialization
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyCysdmrWW2SFOo66GwPrZ4YSXcUFBeC88Y",  // Replace with your Firebase API Key
+        authDomain: "enlace-4ce34.firebaseapp.com",
+        projectId: "enlace-4ce34",
+        storageBucket: "enlace-4ce34.appspot.com",
+        messagingSenderId: "574294679657",
+        appId: "1:574294679657:web:13e33ac4a4b01da3c902f8",
+        measurementId: "G-PKMKGNVDSK"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Form submit event handler
+    document.getElementById('student-signup').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        // Clear previous messages
+        document.getElementById('message').textContent = '';
+        document.getElementById('error-message').textContent = '';
+
+        // Get form data
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const phno = document.getElementById('number').value;
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('pass').value;
+        const courseYear = document.getElementById('year').value;
+
+        
+          // Check if passwords match
+        if (password !== confirmPassword) {
+            window.alert('Passwords do not match!');
+            return;
+        }
+
+        try {
+            // Create a user with Firebase Authentication
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+
+            // Store user details in Firestore
+            await setDoc(doc(db, "student", user.uid), {
+                name: name,
+                email: email,
+                phno: phno,
+                courseYear: courseYear,
+                createdAt: new Date()
+            });
+
+            // Show success message
+            //document.getElementById('message').textContent = 'Registration successful!';
+            window.alert('Registration successful!');
+            document.getElementById('error-message').textContent = '';
+            // Optionally, reset the form
+            document.getElementById('student-signup').reset();
+
+        } catch (error) {
+            // Handle error
+            window.alert("Error registering user:", error);
+            //console.error("Error registering user:", error);
+            //document.getElementById('error-message').textContent = 'Error: ' + error.message;
+            window.alert('Error: ' + error.message);
+            document.getElementById('message').textContent = '';
+        }
+    });
+</script>
+</body>
+</html>
