@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scrollable Navbar with Pages</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <style>
+    .cube {
+    
+            height: 100vh;
+            margin-top: 150px;
+            margin-left: 850px;
+            position: relative;
+            width: 200px; /* Cube width */
+            height: 200px; /* Cube height */
+            transform-style: preserve-3d;
+            transform: rotateX(-30deg) rotateY(0deg);
+            animation: rotateCube 10s infinite linear;
+        }
+        /* Keyframes for the cube rotation */
+        @keyframes rotateCube {
+            0% {
+                transform: rotateY(0deg);
+            }
+            100% {
+                transform: rotateY(360deg);
+            }
+        }
+
+        /* Cube faces */
+        .cube-face {
+            position: absolute;
+            width: 200px; /* Same as the cube's width */
+            height: 200px; /* Same as the cube's height */
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* Front face of the cube */
+        .front {
+            transform: translateZ(100px); /* Move the front face out */
+            background-image: url('Enlace.jpg'); /* Replace with your image */
+        }
+
+        /* Back face of the cube */
+        .back {
+            transform: rotateY(180deg) translateZ(100px); /* Rotate back face 180 degrees */
+            background-image: url('Enlace.jpg'); /* Replace with your image */
+        }
+
+        /* Left face of the cube */
+        .left {
+            transform: rotateY(-90deg) translateZ(100px); /* Rotate left face -90 degrees */
+            background-image: url('Enlace.jpg'); /* Replace with your image */
+        }
+
+        /* Right face of the cube */
+        .right {
+            transform: rotateY(90deg) translateZ(100px); /* Rotate right face 90 degrees */
+            background-image: url('Enlace.jpg'); /* Replace with your image */
+        }
+
+        /* Top face of the cube */
+        .top {
+            transform: rotateX(90deg) translateZ(100px); /* Rotate top face 90 degrees */
+            background-image: url('Enlace.jpg'); /* Replace with your image */
+        }
+
+        /* Bottom face of the cube */
+        .bottom {
+            transform: rotateX(-90deg) translateZ(100px); /* Rotate bottom face -90 degrees */
+            background-image: url('Enlace.jpg'); /* Replace with your image */
+        }
+    /* Basic Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden; /* Prevent horizontal scrolling */
+    }
+
+    /* Navbar Styling */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: #8dbff4;
+      color: rgb(21, 21, 21);
+      padding: 10px 0;
+      z-index: 1000;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    nav ul {
+      display: flex;
+      justify-content: center;
+      list-style-type: none;
+    }
+
+    nav ul li {
+      margin: 0 15px;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: rgb(14, 14, 14);
+      font-size: 18px;
+      padding: 10px 15px;
+      transition: background-color 0.3s;
+    }
+
+    nav ul li a:hover {
+      background-color: #575757;
+      border-radius: 5px;
+    }
+    section {
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 20px;
+      position: relative;
+    }
+    #welcome {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 20vh;
+         color: rgb(10, 9, 9);
+      text-align: center;
+    }
+    #about {
+      margin-top: 250px;
+    }
+ .section {
+    padding: 2rem;
+    text-align: center; 
+}
+.auth-form, .contact-form {
+    max-width: 400px;
+    margin: 2rem auto;
+    color:rgb(11, 11, 11);
+    text-align: left;
+    background-color:rgb(177, 204, 227);
+    padding: 1.5rem;
+    border-radius: 8px;
+    border:solid;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+.auth-form label, .contact-form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+}
+.auth-form input, .auth-form select, .contact-form input, .contact-form textarea {
+    width: 100%;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    border: 1px solid #121111;
+    border-radius: 4px;
+}
+button {
+    display: block;
+    width: 100%;
+    padding: 0.7rem;
+    background: linear-gradient(to right, #155fa0, #64b5f6);/* Blue to light blue gradient */
+    color: rgb(12, 11, 11);
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s ease;
+}
+    html {
+      scroll-behavior: smooth;
+    }
+    section {
+      padding-top: 60px; 
+    }
+    body {
+      padding-top: 60px;
+    }
+    .icon {
+            color: black;
+            font-size: 20px; 
+        }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav>
+    <ul>
+      <li><a href="#welcome">Welcome</a></li>
+      <li><a href="#about">About Us</a></li>
+      <li><a href="#contact">Contact Us</a></li>
+    </ul>
+  </nav>
+  <!-- Content Sections -->
+  <div class="cube">
+    <!-- Cube faces -->
+    <div class="cube-face front"></div>
+    <div class="cube-face back"></div>
+    <div class="cube-face left"></div>
+    <div class="cube-face right"></div>
+    <div class="cube-face top"></div>
+    <div class="cube-face bottom"></div>
+</div>
+  <section id="welcome">
+    <div class="welcome-content">
+        <h1>Welcome to Enlace</h1>
+        <p>Your go-to platform for connecting students and alumni. Join us to share knowledge, build networks, and create lasting relationships.</p>
+
+      </div>
+  </section>
+ 
+  <section id="about">
+    <div>
+      <img src="alumni.png">
+      <h1>About Us</h1>
+      <p>Enlace is a dynamic platform designed to bring people, ideas, and innovations together.<br>
+         Our mission is to provide users with a seamless connection to the resources and tools they <br>
+         need to succeed in a rapidly changing world. Whether you're looking for information, <br>
+         networking opportunities, or professional growth,<br>
+         Enlace is here to connect you with everything you need.</p>
+    </div>
+  </section>
+  
+  <section id="contact" class="section">
+    <div>
+      <h1><a style="text-decoration:none;color: #121111;" href="contact.html">Contact Us </a></h1><br>
+      <p><i class="fas fa-phone-alt icon"></i> Phone</p>
+      <p><i class="fas fa-envelope icon"></i> Mail</p>
+    </div>
+  </section>
+
+</body>
+</html>
